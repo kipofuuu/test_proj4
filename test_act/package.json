@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "mocha": "^10.2.0"  // Version may vary based on the latest release
+    "mocha": "^10.2.0"
   },
   "private": false
 }

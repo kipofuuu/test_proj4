@@ -10,7 +10,7 @@ import {
   FlatList
 } from 'react-native'
 
-export default function App() {
+export default function App () {
   const [enteredGoalText, setEnteredGoalText] = useState('')
   const [courseGoals, setCourseGoals] = useState([])
 
