@@ -42,4 +42,4 @@ jobs:
           fi
 
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.YOUR_TOKEN_SECRET }}  # Replace YOUR_TOKEN_SECRET with the actual secret name
