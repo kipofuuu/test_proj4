@@ -1,4 +1,4 @@
-import React, { useState } from 'react' ss
+import React, { useState } from 'react'
 import {
   StyleSheet,
   Text,
