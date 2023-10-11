@@ -29,6 +29,9 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set GH_TOKEN
+        run: echo "GH_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV  # Set the GH_TOKEN environment variable
+
       - name: Auto-Merge PR
         if: success()  # This step will only run if the previous steps were successful (tests pass)
         run: |
@@ -42,4 +45,4 @@ jobs:
           fi
 
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN for authentication
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
