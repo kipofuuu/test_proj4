@@ -31,13 +31,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-Merge PR
-        if: success() && github.event_name == 'pull_request'  # This step will only run if the previous steps were successful (tests pass) and it's a pull request event
+        if: success() && github.event_name == 'pull_request'
         run: |
           # Get the pull request number
           pr_number="${{ github.event.pull_request.number }}"
           
+          # Ensure the GitHub CLI (gh) is installed
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh -y
+
           # Use the GitHub CLI to merge the PR with the --merge method
-          gh pr merge "$pr_number" --merge  # Specify the merge method here
+          gh pr merge "$pr_number" --merge
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
