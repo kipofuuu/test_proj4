@@ -29,9 +29,6 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set GH_TOKEN
-        run: echo "GH_TOKEN='${{ secrets.GITHUB_TOKEN }}'" >> $GITHUB_ENV  # Set the GH_TOKEN environment variable
-
       - name: Auto-Merge PR
         if: success()  # This step will only run if the previous steps were successful (tests pass)
         run: |
@@ -40,8 +37,8 @@ jobs:
             # Get the pull request number
             pr_number="${{ github.event.pull_request.number }}"
             
-            # Use the GitHub CLI to merge the PR with the specified merge method (e.g., --merge, --rebase, or --squash)
-            gh pr merge "$pr_number" --auto --merge  # You can specify the merge method here
+            # Use the GitHub CLI to merge the PR
+            gh pr merge "$pr_number" --auto
           fi
 
         env:
