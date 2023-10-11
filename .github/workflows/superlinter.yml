@@ -1,14 +1,13 @@
----
-name: Automated Tests, Linting, and Auto-Merge
+name: Automated Tests and Auto-Merge
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types:
+      - opened
 
 jobs:
-  lint-test-and-merge:
-    name: Lint code base, Run Tests, and Auto-Merge
+  auto-merge:
+    name: Auto-Merge PR if Tests Pass
     runs-on: ubuntu-latest
 
     steps:
@@ -23,18 +22,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Super-Linter
-        uses: github/super-linter@v4
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Auto-Merge PR if Tests Pass
+      - name: Auto-Merge PR
         if: success()  # This step will only run if the previous steps were successful (tests pass)
         run: |
-          # Implement your merge logic here
-          # For example, you can use the GitHub CLI or API to merge the PR.
-          # Make sure to check if this action is running in the context of a pull request.
+          # Check if this action is running in the context of a pull request
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # Get the pull request number
+            pr_number="${{ github.event.pull_request.number }}"
+            
+            # Use the GitHub CLI to merge the PR
+            gh pr merge "$pr_number" --auto
+          fi
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
