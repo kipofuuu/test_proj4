@@ -1,5 +1,5 @@
 ---
-name: Automated Tests and Auto-Merge
+name: Automated Tests, Linting, and Auto-Merge
 
 on:
   pull_request:
@@ -7,8 +7,8 @@ on:
       - opened
 
 jobs:
-  auto-merge:
-    name: Auto-Merge PR if Tests Pass
+  lint-test-and-merge:
+    name: Lint code base, Run Tests, and Auto-Merge
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: .
 
       - name: Run Super-Linter
         uses: github/super-linter@v4
@@ -31,22 +30,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-Merge PR
-        if: success() && github.event_name == 'pull_request'
+        if: success()
         run: |
-          # Get the pull request number
-          pr_number="${{ github.event.pull_request.number }}"
-          
-          # Ensure the GitHub CLI (gh) is installed
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-          sudo apt-add-repository https://cli.github.com/packages
-          sudo apt update
-          sudo apt install gh -y
-
-          # Authenticate with GitHub using a token (you may need to set this up in your GitHub repository secrets)
-          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-
-          # Use the GitHub CLI to merge the PR with the --merge method
-          gh pr merge "$pr_number" --merge
-
+          # Check if this action is running in the context of a pull request
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # Get the pull request number
+            pr_number="${{ github.event.pull_request.number }}"
+            
+            # Fetch the PR branch
+            git fetch origin pull/${{ pr_number }}/head:pr_branch
+            
+            # Check out the PR branch
+            git checkout pr_branch
+            
+            # Merge the PR
+            git merge "${{ github.event.pull_request.head.sha }}"
+            
+            # Push the merge
+            git push origin HEAD
+            
+            # Clean up
+            git branch -d pr_branch
+            
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
