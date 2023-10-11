@@ -22,8 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: test_act
-        
+        working-directory: .
 
       - name: Run Super-Linter
         uses: github/super-linter@v4
@@ -32,17 +31,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-Merge PR
-        if: success()  # This step will only run if the previous steps were successful (tests pass)
+        if: success() && github.event_name == 'pull_request'  # This step will only run if the previous steps were successful (tests pass) and it's a pull request event
         run: |
-          # Check if this action is running in the context of a pull request
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            # Get the pull request number
-            pr_number="${{ github.event.pull_request.number }}"
-            
-            # Use the GitHub CLI to merge the PR with the --merge method
-            gh pr merge "$pr_number" --merge  # Specify the merge method here
-
-          fi
+          # Get the pull request number
+          pr_number="${{ github.event.pull_request.number }}"
+          
+          # Use the GitHub CLI to merge the PR with the --merge method
+          gh pr merge "$pr_number" --merge  # Specify the merge method here
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
