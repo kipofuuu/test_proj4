@@ -1,4 +1,3 @@
----
 name: Automated Tests, Linting, and Auto-Merge
 
 on:
@@ -30,15 +29,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-Merge PR
-        if: success()  # This step will only run if the previous steps were successful (tests pass and linting passes)
+        if: success()
         run: |
           # Check if this action is running in the context of a pull request
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             # Get the pull request number
             pr_number="${{ github.event.pull_request.number }}"
             
-            # Use the GitHub CLI to merge the PR with the --merge option
-            gh pr merge "$pr_number" --auto --merge
+            # Fetch the PR branch
+            git fetch origin pull/${{ pr_number }}/head:pr_branch
+            
+            # Check out the PR branch
+            git checkout pr_branch
+            
+            # Merge the PR
+            git merge "${{ github.event.pull_request.head.sha }}"
+            
+            # Push the merge
+            git push origin HEAD
+            
+            # Clean up
+            git branch -d pr_branch
+            
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
