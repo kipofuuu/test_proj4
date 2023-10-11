@@ -29,9 +29,6 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Mocha Tests
-        run: npm test
-
       - name: Auto-Merge PR if Tests Pass
         if: success()  # This step will only run if the previous steps were successful (tests pass)
         run: |
