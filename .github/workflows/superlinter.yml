@@ -37,8 +37,8 @@ jobs:
             # Get the pull request number
             pr_number="${{ github.event.pull_request.number }}"
             
-            # Use the GitHub CLI to merge the PR
-            gh pr merge "$pr_number" --auto
+            # Use the GitHub CLI to merge the PR with the specified merge method (e.g., --merge, --rebase, or --squash)
+            gh pr merge "$pr_number" --auto --merge  # You can specify the merge method here
           fi
 
         env:
