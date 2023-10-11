@@ -42,6 +42,9 @@ jobs:
           sudo apt update
           sudo apt install gh -y
 
+          # Authenticate with GitHub using a token (you may need to set this up in your GitHub repository secrets)
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+
           # Use the GitHub CLI to merge the PR with the --merge method
           gh pr merge "$pr_number" --merge
 
