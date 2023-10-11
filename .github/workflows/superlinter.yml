@@ -22,6 +22,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: '/home/runner/work/test_proj4/package.json'
+        
 
       - name: Run Super-Linter
         uses: github/super-linter@v4
