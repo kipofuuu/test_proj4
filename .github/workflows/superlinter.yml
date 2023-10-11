@@ -1,4 +1,4 @@
-name: Automated Tests and Auto-Merge
+name: Automated Tests, Linting, and Auto-Merge
 
 on:
   pull_request:
@@ -6,8 +6,8 @@ on:
       - opened
 
 jobs:
-  auto-merge:
-    name: Auto-Merge PR if Tests Pass
+  lint-test-and-merge:
+    name: Lint code base, Run Tests, and Auto-Merge
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +29,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-Merge PR
-        if: success()  # This step will only run if the previous steps were successful (tests pass)
+        if: success()  # This step will only run if the previous steps were successful (tests pass and linting passes)
         run: |
           # Check if this action is running in the context of a pull request
           if [ "${{ github.event_name }}" == "pull_request" ]; then
